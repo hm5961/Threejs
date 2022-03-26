@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31808.319
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7D973449-1D68-4422-A705-3360097C0842}"
+	ProjectSection(SolutionItems) = preProject
+		2018038036_김현민_3D.html = 2018038036_김현민_3D.html
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F4D5496D-76EC-463E-A4E1-CE3E3085B7CF}
+	EndGlobalSection
+EndGlobal

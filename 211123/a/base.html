@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>ThreeJS</title>
+    <script src="./three.js"></script>
+    <script src="./dat.gui.js"></script>
+    <script src="./OrbitControls.js"></script>
+    <script src="index.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="webgl-output"></div>
+    <script>
+        function init() {
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(
+                45,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                500
+            );
+            camera.position.x = 100;
+            // const fov = 45;
+            // const aspect = 2;  // the canvas default
+            // const near = 0.1;
+            // const far = 5;
+            // var camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+            // camera.position.z = 2;
+            const gui = new dat.GUI();
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setClearColor(new THREE.Color(0x000000));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+
+            //화면 마우스로 회전시키기
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            camera.rotation.y = 4 * Math.PI
+            camera.position.set(0, 110, 0);
+            //camera.position.set(30, 0, 0);
+            controls.update();
+            //축
+            var axes = new THREE.AxesHelper(25);
+            scene.add(axes);
+            axes.visible = false;
+            gui.add(axes, "visible").name("축표시");
+
+            function updateCamera() {
+                camera.updateProjectionMatrix();
+            }
+
+            //바닥 plane
+            const groundgeometry = new THREE.PlaneGeometry(65, 50);
+            const groundmaterial = new THREE.MeshStandardMaterial({ color: 0xa64d0a, side: THREE.DoubleSide });
+            const groundplane = new THREE.Mesh(groundgeometry, groundmaterial);
+            groundplane.rotation.x = 0.5 * Math.PI
+            groundplane.position.set(-10, 0, 0)
+            groundplane.receiveShadow = true;
+            scene.add(groundplane);
+
+            const ground2geometry = new THREE.PlaneGeometry(20, 30);
+            const ground2plane = new THREE.Mesh(ground2geometry, groundmaterial);
+            ground2plane.rotation.x = 0.5 * Math.PI
+            ground2plane.position.set(32.5, 0, -10)
+            ground2plane.receiveShadow = true;
+            scene.add(ground2plane);
+
+            //천장 default invisible
+            const rooftopgeometry = new THREE.PlaneGeometry(65, 50);
+            const wwmaterial = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
+            const rooftopplane = new THREE.Mesh(rooftopgeometry, wwmaterial);
+            rooftopplane.rotation.x = 0.5 * Math.PI
+            rooftopplane.position.set(-10, 25, 0)
+            rooftopplane.receiveShadow = true;
+            scene.add(rooftopplane);
+
+            const rooftop2geometry = new THREE.PlaneGeometry(20, 30);
+            const rooftop2plane = new THREE.Mesh(rooftop2geometry, wwmaterial);
+            rooftop2plane.rotation.x = 0.5 * Math.PI
+            rooftop2plane.position.set(32.5, 25, -10)
+            rooftop2plane.receiveShadow = true;
+            scene.add(rooftop2plane);
+
+
+
+            rooftopplane.visible = false;
+            rooftop2plane.visible = false;
+            gui.add(rooftopplane, "visible").name("천장1")
+            gui.add(rooftop2plane, "visible").name("천장2")
+
+            //긴벽 plane
+            const longwallgeometry = new THREE.PlaneGeometry(85, 25);
+            const longwall1 = new THREE.Mesh(longwallgeometry, wwmaterial);
+            longwall1.rotation.x = 1 * Math.PI
+            longwall1.position.set(0, 12.5, -25)
+            longwall1.receiveShadow = true;
+            scene.add(longwall1);
+
+            const longwall2geometry = new THREE.PlaneGeometry(65, 25);
+            const longwall2 = new THREE.Mesh(longwall2geometry, wwmaterial);
+            longwall2.rotation.x = 1 * Math.PI
+            longwall2.position.set(-10, 12.5, 25)
+            longwall2.receiveShadow = true;
+            scene.add(longwall2);
+
+            //짧은 벽 plane
+            //출입문
+            const shortwallgeometry = new THREE.PlaneGeometry(30, 25);
+            const shortwall1 = new THREE.Mesh(shortwallgeometry, wwmaterial);
+            shortwall1.rotation.y = 0.5 * Math.PI
+            shortwall1.position.set(42.5, 12.5, -10)
+            shortwall1.receiveShadow = true;
+            scene.add(shortwall1);
+
+            //창문
+            const wwgeometry = new THREE.PlaneGeometry(50, 11);
+            const ww = new THREE.Mesh(wwgeometry, wwmaterial);
+            ww.rotation.y = 0.5 * Math.PI
+            ww.position.set(-42.5, 5.5, 0)
+            ww.receiveShadow = true;
+            scene.add(ww);
+
+            const ww2geometry = new THREE.PlaneGeometry(50, 3);
+            const ww2 = new THREE.Mesh(ww2geometry, wwmaterial);
+            ww2.rotation.y = 0.5 * Math.PI
+            ww2.position.set(-42.5, 23.5, 0)
+            ww2.receiveShadow = true;
+            scene.add(ww2);
+
+            const ww3geometry = new THREE.PlaneGeometry(13.5, 15);
+            const ww3 = new THREE.Mesh(ww3geometry, wwmaterial);
+            ww3.rotation.y = 0.5 * Math.PI
+            ww3.position.set(-42.5, 15, -18.25)
+            ww3.receiveShadow = true;
+            scene.add(ww3);
+
+            const ww4 = new THREE.Mesh(ww3geometry, wwmaterial);
+            ww4.rotation.y = 0.5 * Math.PI
+            ww4.position.set(-42.5, 15, 18.25)
+            ww4.receiveShadow = true;
+            scene.add(ww4);
+
+
+            //벽
+            const bwc_geometry = new THREE.BoxGeometry(15, 19, 1);
+            const high_bwc_geometry = new THREE.BoxGeometry(50, 6, 1);
+            const toi_bwc_geometry = new THREE.BoxGeometry(20, 25, 1);
+            const toi_swc_geometry = new THREE.BoxGeometry(2, 19, 1);
+            const bwc_material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+
+            function makewall(geometry, rotate_x, rotate_y, position_x, position_y, position_z) {
+                const wall = new THREE.Mesh(geometry, bwc_material);
+                wall.rotation.x = rotate_x * Math.PI
+                wall.rotation.y = rotate_y * Math.PI
+                wall.position.set(position_x, position_y, position_z)
+                wall.castShadow = true;
+                scene.add(wall);
+                return wall;
+            }
+
+            const wall = [
+                makewall(bwc_geometry, 0, 0.5, -27.5, 9.5, -17.5), //베란다 방향 좌상 1
+                makewall(bwc_geometry, 0, 0.5, -27.5, 9.5, 17.5), //베란다 방향 좌하 1
+                makewall(bwc_geometry, 0, 0.5, 22.5, 9.5, 2.5), //부엌 방향
+                makewall(toi_swc_geometry, 0, 0.5, 22.5, 9.5, 11), //화장실 문 왼 부엌방향
+                makewall(toi_swc_geometry, 0, 0.5, 22.5, 9.5, 13), //화장실 문 왼 화장실방향
+                makewall(toi_swc_geometry, 0, 0.5, 22.5, 9.5, 24), //화장실 문 우
+                makewall(toi_bwc_geometry, 0, 0, 32.5, 12.5, 5), //부엌 - 화장실 사이 벽
+                makewall(high_bwc_geometry, 0, 0.5, -27.5, 22, 0), //샤시 위 벽 베란다
+                makewall(high_bwc_geometry, 0, 0.5, 22.5, 22, 0) //샤시 위 벽 부엌
+            ]
+
+            // makefur 가구 초기 위치 지정 cube
+
+            //크기
+
+            // const fur_ref_geometry = new THREE.BoxGeometry(10, 15, 10); // 냉장고
+            // const fur_wsh_geometry = new THREE.BoxGeometry(8, 10, 8); // 세탁기
+
+            // const fur_bed_geometry = new THREE.BoxGeometry(15, 5, 22); // 침대
+            // const fur_fod_geometry = new THREE.BoxGeometry(5, 5, 5); // 협탁
+            // const fur_air_geometry = new THREE.BoxGeometry(12, 5, 2); // 에어컨
+
+            // const fur_slt_geometry = new THREE.BoxGeometry(8, 18, 12); // 옷장
+            // const fur_bok_geometry = new THREE.BoxGeometry(8, 18, 3); // 책장
+            // const fur_dsk_geometry = new THREE.BoxGeometry(8, 1, 14); // 책상
+            // const fur_set_geometry = new THREE.BoxGeometry(8, 7, 4); // 책상 옆 수납
+
+            // const fur_din_geometry = new THREE.BoxGeometry(3, 12, 5); // 식료품 렉
+            // const fur_fom_geometry = new THREE.BoxGeometry(12, 7, 5); // 렌지 아래
+
+            // const fur_snk_geometry = new THREE.BoxGeometry(8, 8, 12.5); // 싱크대
+            // const fur_gas_geometry = new THREE.BoxGeometry(8, 6, 7); // 가스렌지대
+            // const fur_dsh_geometry = new THREE.BoxGeometry(8, 9, 12.5); // 그릇장
+            // const fur_hod_geometry = new THREE.BoxGeometry(8, 6, 7); // 후드
+            // const fur_sho_geometry = new THREE.BoxGeometry(5, 9, 6); // 신발장
+
+            // 가구 크기 및 위치 초안
+            // const wod_material = new THREE.MeshStandardMaterial({ color: 0x523002 });
+
+            // function makefur(size_x, size_y, size_z, rotate_x, rotate_y, position_x, position_y, position_z) {
+            //     const fur_geometry = new THREE.BoxGeometry(size_x, size_y, size_z);
+            //     const fur = new THREE.Mesh(fur_geometry, wod_material);
+            //     fur.rotation.x = rotate_x * Math.PI
+            //     fur.rotation.y = rotate_y * Math.PI
+            //     fur.position.set(position_x, position_y, position_z)
+            //     fur.castShadow = true;
+            //     scene.add(fur);
+            //     return fur;
+            // }
+
+            const wod_material = new THREE.MeshStandardMaterial({ color: 0x523002 });
+
+            // function makefur(size_x, size_y, size_z, position_x, position_y, position_z) {
+            //     const fur_geometry = new THREE.BoxGeometry(size_x, size_y, size_z);
+            //     const fur = new THREE.Mesh(fur_geometry, wod_material);
+            //     fur.position.set(position_x, position_y, position_z)
+            //     fur.castShadow = true;
+            //     scene.add(fur);
+            //     return fur;
+            // }
+
+            // const fur = [
+
+            //     //makefur(10, 15, 10, -35, 7.5, -17.5), //냉장고
+            //     //makefur(8, 10, 8, -35, 5, 17.5), //세탁기
+
+            //     //makefur(22, 5, 15, -15.5, 2.5, 17.5),//침대 베란다 벽 사이 0.5만큼 판 rotate_x
+            //     //makefur(5, 5, 5, -24.5, 2.5, 7.5), //협탁
+            //     //makefur(2, 4, 2, -26, 2, 4.5), //협탁
+            //     //makefur(2, 5, 12, -26, 20.5, 18), //에어컨
+
+            //     //makefur(12, 18, 8, -22, 9, -21), //옷장
+            //     //makefur(3, 18, 8, -15, 9, -20), //책장 z21로
+            //     //makefur(14, 1, 8, -9.5, 7, -21), //책상
+            //     //makefur(4, 7, 8, -4.5, 3.5, -21), //책상 옆 수납
+            //     //makefur(3, 5, 6, -1.5, 2.5, -20), //컴퓨터
+            //     // makefur(6, 15, 5, 5, 7.5, -22.5), //전신거울
+            //     // makefur(9, 14, 6, 12.5, 7, -22), //옷장2
+
+            //     // makefur(5, 12, 3, 19.5, 6, -3.5), //식료품 수납
+            //     // makefur(5, 7, 12, 19.5, 3.5, 3), //식료품 수납
+
+            //     // makefur(12.5, 8, 8, 29.25, 4, 0.5), //싱크대
+            //     // makefur(7, 6, 8, 39, 3, 0.5), //가스대
+            //     // makefur(12.5, 9, 8, 29.25, 20.5, 0.5), //그릇장
+            //     // makefur(7, 6, 8, 39, 22, 0.5), //가스대
+            //     // makefur(6, 9, 5, 26.5, 4.5, -22.5) //신발장
+
+            // ]
+
+            // makedor 부피가 있는 통로 화장실문/부엌문/베란다 문 cube
+
+            const gla_material = new THREE.MeshPhongMaterial({ color: 0x222222, opacity: 0.9, transparent: true });
+            const met_material = new THREE.MeshPhongMaterial({ color: 0x333333, shininess: 70, metalness: 10 });
+
+            function makedor(material, size_x, size_y, size_z, position_x, position_y, position_z) {
+                const dor_geometry = new THREE.BoxGeometry(size_x, size_y, size_z); // 문이면 x 1 유리면 x 0.5?
+                const dor = new THREE.Mesh(dor_geometry, material);
+                dor.rotation.x = 0.5 * Math.PI
+                dor.position.set(position_x, position_y, position_z)
+                dor.castShadow = true;
+                scene.add(dor);
+                return dor;
+            }
+
+            const dor = [
+
+                makedor(wod_material, 0.5, 8, 18, 22.5, 9.5, 18.5), //화장실 문
+                makedor(wod_material, 1.1, 0.5, 19, 22.5, 9.5, 14.25), //화장실 문 틀 좌 우 상 하
+                makedor(wod_material, 1.1, 0.5, 19, 22.5, 9.5, 22.75),
+                makedor(wod_material, 1.1, 8, 0.5, 22.5, 18.75, 18.5),
+                makedor(wod_material, 1.1, 8, 0.5, 22.5, 0.25, 18.5),
+
+                //makedor(dor_material, 0.5, 19, 18.5, -27.5, 9.25, 0), //베란다 베이스
+                makedor(wod_material, 1.1, 0.5, 19, -27.5, 9.5, 9.75), //베란다 창틀
+                makedor(wod_material, 1.1, 0.5, 19, -27.5, 9.5, -9.75),
+                makedor(wod_material, 1.1, 19, 0.5, -27.5, 18.75, 0),
+
+                makedor(gla_material, 0.25, 8, 16.5, -27.75, 9.25, 4.5), //베란다 창문 좌 창
+                makedor(wod_material, 0.5, 1, 19, -27.75, 9.5, 9), //베란다 창틀 좌
+                makedor(wod_material, 0.5, 1, 19, -27.75, 9.5, 0), //
+                makedor(wod_material, 0.5, 8, 1, -27.75, 18, 4.5), //
+                makedor(wod_material, 0.5, 8, 1, -27.75, 0.5, 4.5), //
+
+                makedor(gla_material, 0.25, 8, 16.5, -27.25, 9.25, -4.5), //베란다 창문 우 창
+                makedor(wod_material, 0.5, 1, 19, -27.25, 9.5, -9), //베란다 창틀 우
+                makedor(wod_material, 0.5, 1, 19, -27.25, 9.5, 0), //
+                makedor(wod_material, 0.5, 8, 1, -27.25, 18, -4.5), //
+                makedor(wod_material, 0.5, 8, 1, -27.25, 0.5, -4.5), //
+
+                //makedor(dor_material, 0.5, 19, 19, 22.5, 9.5, -15), //부엌 베이스
+                makedor(wod_material, 1.1, 0.5, 19, 22.5, 9.5, -24.75),
+                makedor(wod_material, 1.1, 0.5, 19, 22.5, 9.5, -5.25),
+                makedor(wod_material, 1.1, 19, 0.5, 22.5, 18.75, -15),
+
+                makedor(gla_material, 0.25, 8, 16.5, 22.75, 9.25, -19.5), //부엌 창문 좌 창
+                makedor(wod_material, 0.5, 1, 19, 22.75, 9.5, -15),
+                makedor(wod_material, 0.5, 1, 19, 22.75, 9.5, -24),
+                makedor(wod_material, 0.5, 8, 1, 22.75, 18, -19.5),
+                makedor(wod_material, 0.5, 8, 1, 22.75, 0.5, -19.5),
+
+                makedor(gla_material, 0.25, 8, 16.5, 22.25, 9.25, -10.5), //부엌 창문 우 창
+                makedor(wod_material, 0.5, 1, 19, 22.25, 9.5, -15),
+                makedor(wod_material, 0.5, 1, 19, 22.25, 9.5, -6),
+                makedor(wod_material, 0.5, 8, 1, 22.25, 18, -10.5),
+                makedor(wod_material, 0.5, 8, 1, 22.25, 0.5, -10.5),
+
+                makedor(met_material, 0.5, 8, 18, 42.5, 9.5, -20), //출입문
+                makedor(met_material, 1.1, 0.5, 19, 42.5, 9.5, -15.75),
+                makedor(met_material, 1.1, 0.5, 19, 42.5, 9.5, -24.25),
+                makedor(met_material, 1.1, 8, 0.5, 42.5, 18.75, -20),
+                makedor(met_material, 1.1, 8, 0.5, 42.5, 0.25, -20),
+
+                makedor(met_material, 1.1, 0.5, 12, -42.5, 16.5, 11.75), //유리창 창틀
+                makedor(met_material, 1.1, 0.5, 12, -42.5, 16.5, -11.75),
+                makedor(met_material, 1.1, 24, 0.5, -42.5, 22.25, 0),
+                makedor(met_material, 1.1, 24, 0.5, -42.5, 10.75, 0),
+
+                makedor(gla_material, 0.25, 5, 10, -42.25, 16.5, 8.5), //유리창 창문 좌 창
+                makedor(met_material, 0.5, 0.5, 11, -42.25, 16.5, 11.25), //유리창 창틀 좌
+                makedor(met_material, 0.5, 0.5, 11, -42.25, 16.5, 5.75),
+                makedor(met_material, 0.5, 5, 0.5, -42.25, 21.75, 8.5),
+                makedor(met_material, 0.5, 5, 0.5, -42.25, 11.25, 8.5),
+
+                makedor(gla_material, 0.25, 5, 10, -42.25, 16.5, -8.5), //유리창 창문 우 창
+                makedor(met_material, 0.5, 0.5, 11, -42.25, 16.5, -5.75), //유리창 창틀 우
+                makedor(met_material, 0.5, 0.5, 11, -42.25, 16.5, -11.25),
+                makedor(met_material, 0.5, 5, 0.5, -42.25, 21.75, -8.5),
+                makedor(met_material, 0.5, 5, 0.5, -42.25, 11.25, -8.5),
+
+                makedor(gla_material, 0.25, 11, 10, -42.75, 16.5, 0), //유리창 창문 우 창
+                makedor(met_material, 0.5, 0.5, 11, -42.75, 16.5, -5.75), //유리창 창틀 우
+                makedor(met_material, 0.5, 0.5, 11, -42.75, 16.5, 5.75),
+                makedor(met_material, 0.5, 12, 0.5, -42.75, 21.75, 0),
+                makedor(met_material, 0.5, 12, 0.5, -42.75, 11.25, 0),
+            ]
+
+            //const wod_material = new THREE.MeshStandardMaterial({ color: 0x523002 });
+            //const gla_material = new THREE.MeshStandardMaterial({ color: 0xd5f5f4, opacity: 0.8, transparent: true });
+            //const met_material = new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.8 });
+            const whm_material = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 70, metalness: 10 });
+            const whw_material = new THREE.MeshStandardMaterial({ color: 0xa0928f });
+            const wlw_material = new THREE.MeshStandardMaterial({ color: 0x351b0e });
+            const chw_material = new THREE.MeshStandardMaterial({ color: 0xA56202 });
+            const brw_material = new THREE.MeshStandardMaterial({ color: 0x553222 });
+            const bed_material = new THREE.MeshStandardMaterial({ color: 0xaaa6bf });
+            const pil_material = new THREE.MeshStandardMaterial({ color: 0x838193 });
+            const gry_material = new THREE.MeshStandardMaterial({ color: 0x444444 });
+            const gmt_material = new THREE.MeshPhongMaterial({ color: 0x444444, shininess: 70, metalness: 10 });
+
+
+
+            function boxfur(material, size_x, size_y, size_z, position_x, position_y, position_z) {
+                const boxfur_geometry = new THREE.BoxGeometry(size_x, size_y, size_z);
+                const boxfur = new THREE.Mesh(boxfur_geometry, material);
+                boxfur.position.set(position_x, position_y, position_z)
+                boxfur.castShadow = true;
+                scene.add(boxfur);
+                return boxfur;
+            }
+
+            const bf = [
+                boxfur(whm_material, 10, 15, 9, -35, 7.5, -18), //냉장고 z1
+                boxfur(met_material, 10, 0.9, 1, -35, 8, -13), //냉장고 손잡이
+                boxfur(met_material, 10, 0.9, 1, -35, 9, -13), //냉장고 손잡이
+
+                boxfur(whm_material, 8, 9, 7, -35, 6, 18), //세탁기 y1,z1
+                boxfur(whm_material, 8, 0.05, 7, -35, 10.55, 18), //세탁기 y1,z1
+
+                boxfur(wlw_material, 22, 2.5, 15, -15.5, 1.25, 17.5),//침대 베란다 벽 사이 0.5만큼 판 rotate_x
+                boxfur(wlw_material, 0.5, 10, 15, -26.75, 5, 17.5),//침대 머리맡 상판?
+                boxfur(whm_material, 0.01, 8, 11, -26.45, 4, 17.5),//침대 머리맡 상판?
+                //boxfur(bed_material, 22, 2.5, 15, -15.5, 3.75, 17.5),//침대 베란다 벽 사이 0.5만큼 판 rotate_x
+
+                boxfur(chw_material, 4.5, 5, 5, -24.75, 2.5, 7.5), //협탁
+                boxfur(chw_material, 0.5, 1.5, 5, -22.2, 4.25, 7.5), //협탁  
+                boxfur(chw_material, 0.5, 1.5, 5, -22.2, 2.5, 7.5), //협탁   
+                boxfur(chw_material, 0.5, 1.5, 5, -22.2, 0.75, 7.5), //협탁        
+
+                //boxfur(whm_material, 1, 5, 12, -26.5, 20.5, 18), //에어컨       
+                boxfur(met_material, 0.05, 0.5, 2, -24.95, 19.5, 17), //에어컨
+                boxfur(met_material, 0.05, 0.1, 10, -24.95, 22, 17), //에어컨
+                boxfur(met_material, 0.05, 0.1, 10, -24.95, 21.5, 17), //에어컨
+                boxfur(met_material, 0.05, 0.1, 10, -24.95, 21, 17), //에어컨
+                boxfur(met_material, 0.05, 0.1, 10, -24.95, 20.5, 17), //에어컨
+                boxfur(met_material, 0.05, 0.1, 10, -24.95, 20, 17), //에어컨
+
+                boxfur(wlw_material, 11.95, 18, 7.5, -21, 9, -21.25), //옷장
+                boxfur(wlw_material, 11.95, 0.95, 0.5, -21, 17.5, -17.25), //옷장 구성 최상단
+                boxfur(wlw_material, 5.95, 9.95, 0.5, -24, 12, -17.25), //옷장 왼문
+                boxfur(met_material, 0.5, 2, 1, -20, 12, -17), //옷장 왼문손잡이
+                boxfur(wlw_material, 5.95, 9.95, 0.5, -18, 12, -17.25), //옷장 오른문
+                boxfur(met_material, 0.5, 2, 1, -22, 12, -17), //옷장 오른문손잡이
+                boxfur(wlw_material, 11.95, 2.95, 0.5, -21, 5.5, -17.25), //옷장 서랍1 1,2에 원뿔 손잡이 높이 5.5 / 2.5
+                boxfur(wlw_material, 11.95, 2.95, 0.5, -21, 2.5, -17.25), //옷장 서랍2
+                boxfur(wlw_material, 11.95, 0.95, 0.5, -21, 0.5, -17.25), //옷장 구성 최하단
+
+                //boxfur(wlw_material, 3, 18, 9, -13.5, 9, -20.5), //책장 
+                boxfur(wlw_material, 3, 19, 0.5, -13.5, 9.5, -24.75), //책장 좌벽
+                boxfur(wlw_material, 3, 19, 0.5, -13.5, 9.5, -16.25), //책장 우벽
+                boxfur(wlw_material, 3, 1, 8, -13.5, 0.5, -20.5), //책장 최 하단
+                boxfur(wlw_material, 3, 0.5, 8, -13.5, 4, -20.5), //책장  
+                boxfur(wlw_material, 3, 0.5, 8, -13.5, 7.5, -20.5), //책장 
+                boxfur(wlw_material, 3, 0.5, 8, -13.5, 11, -20.5), //책장 
+                boxfur(wlw_material, 3, 0.5, 8, -13.5, 14.5, -20.5), //책장 
+                boxfur(whm_material, 3, 1, 9, -13.5, 19.5, -20.5), //책장 최 상단
+                boxfur(whm_material, 0.01, 19, 9, -15, 9.5, -20.5), //책장 백플레이트?
+                boxfur(wlw_material, 0.01, 19, 9, -15.01, 9.5, -20.5), //책장 백플레이트?
+
+                boxfur(wlw_material, 14, 0.5, 8, -8, 8, -20.5), //책상
+                boxfur(met_material, 7, 5, 0.5, -7.5, 11.5, -22.75), //책상
+                //boxfur(whm_material, 6.9, 4.9, 0.01, -7.5, 11.5, -22.45), //책상
+
+                //boxfur(wlw_material, 4, 8, 8, -3, 4, -20.5), //책상 옆 수납
+                boxfur(wlw_material, 4, 8, 7.5, -3, 4, -20.75), //책상 옆 수납
+                boxfur(wlw_material, 4, 1.45, 0.5, -3, 0.75, -16.75), //책상 옆 수납 최하단
+                boxfur(whm_material, 4, 1.95, 0.45, -3, 2.5, -16.75), //책상 옆 수납 1 /123중간에 은색 손잡이
+                boxfur(whm_material, 4, 1.95, 0.45, -3, 4.5, -16.75), //책상 옆 수납 2
+                boxfur(whm_material, 4, 1.95, 0.45, -3, 6.5, -16.75), //책상 옆 수납 3
+                boxfur(wlw_material, 4, 0.45, 0.5, -3, 7.75, -16.75), //책상 옆 수납 최상단
+
+                boxfur(met_material, 3, 5, 6, 0.5, 2.5, -20), //컴퓨터
+                boxfur(gry_material, 2, 0.05, 5, 0.25, 5, -20), //컴퓨터
+                boxfur(gry_material, 2.95, 4.95, 0.05, 0.5, 2.5, -17), //컴퓨터   
+
+
+                boxfur(whm_material, 9, 14, 6, 12.5, 7, -22), //옷장 겸 수납장           
+                boxfur(whm_material, 4.45, 13, 0.45, 14.75, 7.5, -19), //옷장2           
+                boxfur(whm_material, 4.45, 13, 0.45, 10.25, 7.5, -19), //옷장2     
+                boxfur(whm_material, 9, 1, 0.45, 12.5, 0.5, -19), //옷장2      
+                boxfur(met_material, 0.5, 2, 1, 11.75, 7.5, -18.75), //옷장 왼문손잡이
+                boxfur(met_material, 0.5, 2, 1, 13.25, 7.5, -18.75), //옷장 오른문손잡이                
+
+
+                //boxfur(met_material, 5, 12, 3, 19.5, 6, -3.5), //식료품 수납 서랍
+                boxfur(met_material, 0.5, 12, 2.75, 17.25, 6, -3.5), //식료품 수납 서랍 좌
+                boxfur(met_material, 0.5, 12, 2.75, 21.75, 6, -3.5), //식료품 수납 서랍 우
+                boxfur(met_material, 5, 0.5, 3, 19.5, 0.25, -3.5), //식료품 수납 서랍 최하단
+                boxfur(met_material, 5, 0.5, 2.75, 19.5, 4.5, -3.5), //식료품 수납 서랍 1
+                boxfur(met_material, 5, 0.5, 2.75, 19.5, 8.25, -3.5), //식료품 수납 서랍2
+                boxfur(met_material, 5, 0.5, 3, 19.5, 12, -3.5), //식료품 수납 서랍3
+                boxfur(met_material, 5, 12, 0.01, 19.5, 6, -2), //식료품 수납 서랍 백플레이트
+
+                //boxfur(whm_material, 5, 7, 12, 19.5, 3.5, 4), //전자렌지 수납장
+                boxfur(whw_material, 4.5, 8.5, 12, 19.75, 4.25, 4), //전자렌지 수납장 메인
+                boxfur(whw_material, 0.5, 1, 12, 17.25, 0.5, 4), //전자렌지 수납장 최하단
+                boxfur(whw_material, 0.45, 2.45, 12, 17.25, 2.25, 4), //전자렌지 수납장1
+                boxfur(whw_material, 0.45, 2.45, 12, 17.25, 4.75, 4), //전자렌지 수납장2
+                boxfur(whw_material, 0.45, 2.45, 12, 17.25, 7.25, 4), //전자렌지 수납장3
+
+
+                //boxfur(whm_material, 3.5, 4.5, 6, 19.75, 10.25, 2), //전자렌지 베이스
+                boxfur(whm_material, 3.5, 0.5, 6, 19.25, 8.75, 2), //전자렌지 최하단
+                boxfur(whm_material, 3.5, 4.5, 0.5, 19.25, 10.25, -0.75), //전자렌지 좌측
+                boxfur(whm_material, 4, 4.5, 1.5, 19.25, 10.25, 4.25), //전자렌지 우측
+                boxfur(whm_material, 0.5, 4.5, 6, 21.25, 10.25, 2), //전자렌지 백플레이트
+                boxfur(whm_material, 3.5, 0.5, 6, 19.25, 12.25, 2), //전자렌지 상단
+
+                boxfur(whm_material, 0.5, 0.5, 4, 17.5, 8.75, 1.5), //전자렌지 최하단
+                boxfur(whm_material, 0.5, 4.5, 0.5, 17.5, 10.25, -0.75), //전자렌지 좌측
+                boxfur(whm_material, 0.5, 0.5, 4, 17.5, 12.25, 1.5), //전자렌지 상단
+                boxfur(gla_material, 0.25, 4.5, 4, 17.5, 10.23, 1.5), //전자렌지 상단
+                boxfur(met_material, 0.05, 3, 1, 17.25, 10.5, 4.25), //전자렌지 우측
+
+
+
+
+                //boxfur(12.5, 8, 8, 29.25, 4, 0.5), //싱크대
+                boxfur(brw_material, 12.5, 1, 8, 29.25, 0.5, 0.5), //최하단 요소
+                boxfur(chw_material, 6.20, 5.95, 0.5, 26.12, 4, -3.75), // 좌문
+                boxfur(chw_material, 6.20, 5.95, 0.5, 32.37, 4, -3.75), // 우문
+                boxfur(chw_material, 0.5, 6, 8, 23.25, 4, 0.5), // 좌벽
+                boxfur(chw_material, 0.5, 6, 8, 35.25, 4, 0.5), // 우벽 
+                boxfur(gmt_material, 6.25, 1, 8.5, 32.37, 7.5, 0.25), // 좌 상판철
+                boxfur(gmt_material, 6.25, 1, 1.5, 26.12, 7.5, -3.25), // 우 상판철 하
+                boxfur(gmt_material, 6.25, 1, 1.5, 26.12, 7.5, 3.75), // 우 상판철 상
+                boxfur(gmt_material, 1.5, 1, 5.5, 23.75, 7.5, 0.25), // 우 상판철 우
+
+                boxfur(gmt_material, 1, 3.5, 5.75, 29.75, 5.75, 0.25), // 싱크대 내부 좌
+                boxfur(gmt_material, 1, 3.5, 5.75, 24, 5.75, 0.25), // 싱크대 내부 우
+                boxfur(gmt_material, 5.75, 3.5, 1, 26.5, 5.75, 3.5), // 싱크대 내부 상
+                boxfur(gmt_material, 5.75, 3.5, 1, 26.5, 5.75, -3), // 싱크대 내부 하
+                boxfur(gmt_material, 6.5, 1, 5.75, 26.5, 3.5, 0.25), // 싱크대 내부 하
+
+
+                //가스대
+                boxfur(brw_material, 7, 1, 8, 39, 0.5, 0.5), //최하단 요소
+                boxfur(chw_material, 3.45, 4.45, 0.5, 37.25, 3.25, -3.75), //좌문
+                boxfur(chw_material, 3.45, 4.45, 0.5, 40.75, 3.25, -3.75), //우문
+                boxfur(chw_material, 0.5, 4.5, 8, 35.75, 3.25, 0.5), //좌문
+                boxfur(chw_material, 0.5, 4.5, 8, 42.25, 3.25, 0.5), //우문
+                boxfur(gmt_material, 7, 1, 8.5, 39, 6, 0.25), // 상판철
+
+                //인덕션
+                boxfur(met_material, 7, 1.5, 8.5, 39, 7.25, 0.25), // 상판철
+
+
+                //그릇장
+                boxfur(chw_material, 12.5, 9, 7.5, 29.25, 20.5, 0.75), //그릇장
+                boxfur(chw_material, 6.2, 8.95, 0.5, 26.12, 20.5, -3.25), //그릇장 좌문
+                boxfur(chw_material, 6.2, 8.95, 0.5, 32.37, 20.5, -3.25), //그릇장 우문
+
+                //가스후드
+                boxfur(chw_material, 7, 6, 7.5, 39, 22, 0.75), //가스후드
+                boxfur(chw_material, 6.95, 6, 0.5, 39, 22, -3.25), //가스후드
+                boxfur(gmt_material, 7, 1, 10, 39, 18.5, -0.5), //가스후드
+
+                //신발장
+                boxfur(chw_material, 7, 1, 5, 26.5, 0.5, -22.5), //신발장
+                boxfur(chw_material, 7, 9, 4.5, 26.5, 4.5, -22.75), //신발장
+                boxfur(chw_material, 3.45, 8, 0.45, 24.75, 5, -20.25), //신발장 좌문
+                boxfur(chw_material, 3.45, 8, 0.45, 28.25, 5, -20.25), //신발장 우문
+
+                boxfur(whm_material, 2, 2.5, 1.65, -1, 24.25, 0.27), //거실등 프레임
+                boxfur(whm_material, 2, 2.5, 1.65, 33, 23.75, -9.73), //주방등 프레임
+                boxfur(whm_material, 1.65, 2.5, 2, -35.25, 23.75, 0.5), //주방등 프레임
+            ]
+
+            //const monitor_bright = new THREE.BoxGeometry(6.9, 4.9, 0.01);
+            //const monitor_bright = new THREE.Mesh(monitor_bright, whm_material);
+
+
+
+            function makecylfur(material, radtop, radheight, radbot, position_x, position_y, position_z, rotate_x, rotate_y, rotate_z) {
+
+                const radiusTop = radtop;
+                const radiusBottom = radbot;
+                const rheight = radheight;
+                const radialSegments = 20;
+                const radgeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, rheight, radialSegments);
+
+                cylfur = new THREE.Mesh(radgeometry, material)
+                cylfur.position.set(position_x, position_y, position_z)
+
+                cylfur.rotation.x = rotate_x * Math.PI
+                cylfur.rotation.y = rotate_y * Math.PI
+                cylfur.rotation.z = rotate_z * Math.PI
+
+                cylfur.castShadow = true;
+                scene.add(cylfur);
+                return cylfur;
+            }
+            const sf = [
+                makecylfur(whm_material, 2, 4, 2, -25, 2, 3, 0, 0, 0),
+                makecylfur(whm_material, 2.1, 1, 2.1, -25, 4, 3, 0, 0, 0),
+
+                makecylfur(met_material, 0.5, 4, 0.5, -7.25, 10, -24, 0, 0, 0),
+
+            ]
+
+            function makeround(rmaterial, rlength, rdepth, rwidth, rotate_x, rotate_y, rotate_z, position_x, position_y, position_z, rboolean) {
+
+                const shape = new THREE.Shape();
+                shape.moveTo(0, 0);
+                shape.lineTo(0, rwidth);
+                shape.lineTo(rlength, rwidth);
+                shape.lineTo(rlength, 0);
+                shape.lineTo(0, 0);
+
+                const extrudeSettings = {
+                    steps: 2,
+                    depth: rdepth,
+                    bevelEnabled: rboolean,
+                    bevelThickness: 1,
+                    bevelSize: 1,
+                    bevelOffset: 0,
+                    bevelSegments: 4,
+                };
+
+                rgeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                rmesh = new THREE.Mesh(rgeometry, rmaterial);
+                rmesh.castShadow = true;
+                rmesh.receiveShadow = true;
+
+                rmesh.position.set(position_x, position_y, position_z);
+
+                rmesh.rotation.x = rotate_x * Math.PI
+                rmesh.rotation.y = rotate_y * Math.PI
+                rmesh.rotation.z = rotate_z * Math.PI
+
+                scene.add(rmesh);
+            }
+
+            //(material, legnth, depth, width, rotate_x, rotate_y, rotate_z, position_x, position_y, position_z) {
+            const light_material = new THREE.MeshPhongMaterial({ emissive: 0xFFFFFF });
+            const rnd = [
+                makeround(whm_material, 8, 1, 6.5, 0, 0, 0, -39, 1, -14.5, true), //냉장고 냉장실
+                makeround(whm_material, 8, 1, 4.5, 0, 0, 0, -39, 9.5, -14.5, true), //냉장고 냉동실
+                makeround(met_material, 10, 0.05, 15, 0, 0, 0, -40, 0, -13.5, false), //냉장고 냉동실
+
+                //boxfur(whm_material, 8, 9, 7, -35, 6, 18), //세탁기 y1,z1
+                makeround(met_material, 5.9, 6, 0.5, 0, 0, 0, -37.95, 9, 14, true), //냉장고 냉장실
+
+
+
+                makeround(bed_material, 20, 13, 2, 0, 0, 0, -25.5, 2.5, 11, true), //침대 매트리스
+                makeround(pil_material, 3, 5, 2, 0, 0, 0, -25.5, 4, 14.5, true), //침대 배게
+                makeround(pil_material, 15, 13, 4, 0, 0, 0, -20.75, 1.5, 10.75, true), //침대 이불
+
+                //boxfur(whm_material, 1, 5, 12, -26.5, 20.5, 18), //에어컨
+                makeround(whm_material, 10, 1, 3, 0, 0.5, 0, -27, 19, 22, true), //침대 이불
+
+
+                makeround(met_material, 5, -0.5, 3, 0, 0, 0, -10, 10, -23, true), //모니터
+
+
+
+            ]
+
+
+            const makelamp = new THREE.Shape();
+            makelamp.moveTo(0, 0);
+            makelamp.lineTo(0, 0.5);
+            makelamp.lineTo(8, 0.5);
+            makelamp.lineTo(8, 0);
+            makelamp.lineTo(0, 0);
+
+            const lampextrudeSettings = {
+                steps: 2,
+                depth: -0.5,
+                bevelEnabled: true,
+                bevelThickness: 1,
+                bevelSize: 1,
+                bevelOffset: 0,
+                bevelSegments: 4,
+            };
+
+            lampGeometry = new THREE.ExtrudeGeometry(makelamp, lampextrudeSettings);
+            mainlampmesh = new THREE.Mesh(lampGeometry, light_material);
+            mainlampmesh.castShadow = true;
+            mainlampmesh.receiveShadow = true;
+            mainlampmesh.position.set(3, 24, 0);
+            mainlampmesh.rotation.y = 1 * Math.PI
+            scene.add(mainlampmesh);
+
+            kitchenlampmesh = new THREE.Mesh(lampGeometry, light_material);
+            kitchenlampmesh.castShadow = true;
+            kitchenlampmesh.receiveShadow = true;
+            kitchenlampmesh.position.set(37, 24, -10);
+            kitchenlampmesh.rotation.y = 1 * Math.PI
+            scene.add(kitchenlampmesh);
+
+            verandalampmesh = new THREE.Mesh(lampGeometry, light_material);
+            verandalampmesh.castShadow = true;
+            verandalampmesh.receiveShadow = true;
+            verandalampmesh.position.set(-35, 24, 4.5);
+            verandalampmesh.rotation.y = 0.5 * Math.PI
+            scene.add(verandalampmesh);
+
+
+            const dark_material = new THREE.MeshPhongMaterial({ emissive: 0x111111 });
+            maindarkmesh = new THREE.Mesh(lampGeometry, dark_material);
+            maindarkmesh.castShadow = true;
+            maindarkmesh.receiveShadow = true;
+            maindarkmesh.position.set(3, 24, 0);
+            maindarkmesh.rotation.y = 1 * Math.PI
+            scene.add(maindarkmesh);
+
+            kitchendarkmesh = new THREE.Mesh(lampGeometry, dark_material);
+            kitchendarkmesh.castShadow = true;
+            kitchendarkmesh.receiveShadow = true;
+            kitchendarkmesh.position.set(37, 24, -10);
+            kitchendarkmesh.rotation.y = 1 * Math.PI
+            scene.add(kitchendarkmesh);
+
+            verandadarkmesh = new THREE.Mesh(lampGeometry, dark_material);
+            verandadarkmesh.castShadow = true;
+            verandadarkmesh.receiveShadow = true;
+            verandadarkmesh.position.set(-35, 24, 4.5);
+            verandadarkmesh.rotation.y = 0.5 * Math.PI
+            scene.add(verandadarkmesh);
+
+
+
+            const System = new THREE.Object3D();
+            scene.add(System);
+
+            const solarSystem = new THREE.Object3D();
+            System.add(solarSystem);
+            const moonlightSystem = new THREE.Object3D();
+            System.add(moonlightSystem);
+            const lampSystem = new THREE.Object3D();
+            System.add(lampSystem);
+            const pcSystem = new THREE.Object3D();
+            System.add(pcSystem);
+
+            const sunsetgeometry = new THREE.PlaneGeometry(1000, 1000);
+            const sunsetmaterial = new THREE.MeshStandardMaterial({ color: 0x000000, side: THREE.DoubleSide });
+            const sunsetplane = new THREE.Mesh(sunsetgeometry, sunsetmaterial);
+            sunsetplane.rotation.x = 0.5 * Math.PI
+            sunsetplane.position.set(-92.5, -0.5, 0)
+            System.add(sunsetplane);
+            //지평선아래에서 일/월광이 건물 내를 비추지 않게 하기 위함
+
+            const sunsphereGeometry = new THREE.SphereGeometry(1, 10, 6);
+
+            const sunMaterial = new THREE.MeshPhongMaterial({ emissive: 0xFFFF00 });
+            const sunMesh = new THREE.Mesh(sunsphereGeometry, sunMaterial);
+            sunMesh.scale.set(5, 5, 5);
+            sunMesh.position.set(-100, -50, 0)
+            solarSystem.add(sunMesh);
+
+            const solarcolor = 0xFFFFFF;
+            const solarintensity = 1;
+            const solarlight = new THREE.PointLight(solarcolor, solarintensity);
+            solarlight.castShadow = true;
+            solarlight.visible = true;
+            scene.add(solarlight);
+            gui.add(solarlight, "visible").name("solarlight")
+            solarlight.position.set(-92.5, 0, 0)
+            solarSystem.add(solarlight);
+
+            const moonMaterial = new THREE.MeshPhongMaterial({ emissive: 0xaaFFFF });
+            const moonMesh = new THREE.Mesh(sunsphereGeometry, moonMaterial);
+            moonMesh.scale.set(3, 3, 3);
+            moonMesh.position.set(-100, 50, 0)
+            moonlightSystem.add(moonMesh);
+
+            const mooncolor = 0xFFFFFF;
+            const moonintensity = 0.5;
+            const moonlight = new THREE.PointLight(mooncolor, moonintensity);
+            moonlight.castShadow = true;
+            moonlight.visible = true;
+            scene.add(moonlight);
+            gui.add(moonlight, "visible").name("moonlight")
+            moonlight.position.set(-92.5, 0, 0)
+            solarSystem.add(moonlight);
+
+            //거실등
+            main_lightl = new THREE.PointLight(0xffffff, 1, 100, 1);
+            main_lightl.position.set(2, 22, 0);
+            main_lightl.castShadow = true;
+            main_lightl.visible = false;
+            scene.add(main_lightl);
+            gui.add(main_lightl, "visible").name("main_lightl")
+            lampSystem.add(main_lightl);
+
+            const main_lightlHelper = new THREE.PointLightHelper(main_lightl, 1);
+            main_lightlHelper.visible = false;
+            scene.add(main_lightlHelper);
+            gui.add(main_lightlHelper, "visible").name("main_lightlHelper")
+
+            main_lightr = new THREE.PointLight(0xffffff, 1, 100, 1);
+            main_lightr.position.set(-4, 22, 0);
+            main_lightr.castShadow = true;
+            main_lightr.visible = false;
+            scene.add(main_lightr);
+            gui.add(main_lightr, "visible").name("main_lightr")
+            lampSystem.add(main_lightr);
+
+            const main_lightrHelper = new THREE.PointLightHelper(main_lightr, 1);
+            main_lightrHelper.visible = false;
+            scene.add(main_lightrHelper);
+            gui.add(main_lightrHelper, "visible").name("main_lightrHelper")
+
+            //주방등
+            kitchen_lightl = new THREE.PointLight(0xffffff, 1, 100, 1);
+            kitchen_lightl.position.set(36.5, 22, -10);
+            kitchen_lightl.castShadow = true;
+            kitchen_lightl.visible = false;
+            scene.add(kitchen_lightl);
+            gui.add(kitchen_lightl, "visible").name("kitchen_lightl")
+
+            const kitchen_lightlHelper = new THREE.PointLightHelper(kitchen_lightl, 1);
+            kitchen_lightlHelper.visible = false;
+            scene.add(kitchen_lightlHelper);
+            gui.add(kitchen_lightlHelper, "visible").name("kitchen_lightlHelper")
+
+            kitchen_lightr = new THREE.PointLight(0xffffff, 1, 100, 1);
+            kitchen_lightr.position.set(30, 22, -10);
+            kitchen_lightr.castShadow = true;
+            kitchen_lightr.visible = false;
+            scene.add(kitchen_lightr);
+            gui.add(kitchen_lightr, "visible").name("kitchen_lightr")
+
+            const kitchen_lightrHelper = new THREE.PointLightHelper(kitchen_lightr, 1);
+            kitchen_lightrHelper.visible = false;
+            scene.add(kitchen_lightrHelper);
+            gui.add(kitchen_lightrHelper, "visible").name("kitchen_lightrHelper")
+
+            //베란다등
+            veranda_lightl = new THREE.PointLight(0xffffaa, 1, 100, 1);
+            veranda_lightl.position.set(-35.25, 22, -2.5);
+            veranda_lightl.castShadow = true;
+            veranda_lightl.visible = false;
+            scene.add(veranda_lightl);
+            gui.add(veranda_lightl, "visible").name("veranda_light")
+
+            const veranda_lightlHelper = new THREE.PointLightHelper(veranda_lightl, 1);
+            veranda_lightlHelper.visible = false;
+            scene.add(veranda_lightlHelper);
+            gui.add(veranda_lightlHelper, "visible").name("veranda_lightlHelper")
+
+            veranda_lightr = new THREE.PointLight(0xffffaa, 1, 100, 1);
+            veranda_lightr.position.set(-35.25, 22, 3.5);
+            veranda_lightr.castShadow = true;
+            veranda_lightr.visible = false;
+            scene.add(veranda_lightr);
+            gui.add(veranda_lightr, "visible").name("veranda_lightr")
+
+            const veranda_lightrHelper = new THREE.PointLightHelper(veranda_lightr, 1);
+            veranda_lightrHelper.visible = false;
+            scene.add(veranda_lightrHelper);
+            gui.add(veranda_lightrHelper, "visible").name("veranda_lightrHelper")
+
+            //모니터조명 + 모니터패널 on/off
+            const monitorGeometry = new THREE.BoxGeometry(6.9, 4.9, 0.01);
+            const monitorBrightMaterial = new THREE.MeshPhongMaterial({ emissive: 0xFFFFFF });
+            const monitorBlackMaterial = new THREE.MeshPhongMaterial({ color: 0x111111, shininess: 50 });
+            const monitorBright = new THREE.Mesh(monitorGeometry, monitorBrightMaterial);
+            const monitorBlack = new THREE.Mesh(monitorGeometry, monitorBlackMaterial);
+            monitorBright.position.set(-7.5, 11.5, -22.45);
+            monitorBlack.position.set(-7.5, 11.5, -22.45);
+            scene.add(monitorBright);
+            scene.add(monitorBlack);
+
+            monitorlight = new THREE.RectAreaLight(0xffffff, 1, 6.9, 4.9);
+            monitorlight.position.set(-7.5, 11.5, -20);
+            //monitorlight.castShadow = true;
+            monitorlight.visible = false;
+            scene.add(monitorlight);
+            gui.add(monitorlight, "visible").name("monitorlight")
+
+            const monitorlightHelper = new THREE.PointLight(monitorlight);
+            monitorlightHelper.visible = false;
+            scene.add(monitorlightHelper);
+            gui.add(monitorlightHelper, "visible").name("monitorlightHelper")
+
+            const pcBrightGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.01);
+            const pcBlackGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.01);
+            const pcBrightMaterial = new THREE.MeshPhongMaterial({ color: 0x0000FF, emissive: 0x0000FF });
+            const pcBlackMaterial = new THREE.MeshStandardMaterial({ color: 0x444444, });
+            const pcBright = new THREE.Mesh(pcBrightGeometry, pcBrightMaterial);
+            const pcBlack = new THREE.Mesh(pcBlackGeometry, pcBlackMaterial);
+            pcBright.position.set(1.6, 5.01, -17.3);
+            pcBlack.position.set(1.6, 5.02, -17.3);
+            scene.add(pcBright);
+            scene.add(pcBlack);
+
+            const pcLedlight = new THREE.PointLight(0x0000ff, 0.1, 100, 1)
+            pcLedlight.position.set(1.6, 5.01, -17.3);
+            pcLedlight.visible = true;
+            scene.add(pcLedlight);
+            gui.add(pcLedlight, "visible").name("pcLedlight")
+
+            const pcLedlightHelper = new THREE.PointLightHelper(pcLedlight, 1);
+            pcLedlightHelper.visible = false;
+            scene.add(pcLedlightHelper);
+            gui.add(pcLedlightHelper, "visible").name("pcLedlightHelper")
+
+            const monitorledBrightGeometry = new THREE.BoxGeometry(0.05, 0.1, 0.05);
+            const monitorledBrightMaterial = new THREE.MeshPhongMaterial({ color: 0xFF0000, emissive: 0xFF0000 });
+            const monitorledBright = new THREE.Mesh(monitorledBrightGeometry, monitorledBrightMaterial);
+            monitorledBright.position.set(-4.2, 9.05, -22.48);
+            scene.add(monitorledBright);
+
+            const monitorLedlight = new THREE.PointLight(0xff0000, 0.1, 100, 1)
+            monitorLedlight.position.set(-4.2, 9.05, -22.48);
+            monitorLedlight.visible = true;
+            scene.add(monitorLedlight);
+            gui.add(monitorLedlight, "visible").name("monitorLedlight")
+
+            const monitorLedlightHelper = new THREE.PointLightHelper(monitorLedlight, 1);
+            monitorLedlightHelper.visible = false;
+            scene.add(monitorLedlightHelper);
+            gui.add(monitorLedlightHelper, "visible").name("monitorLedlightHelper")
+
+            const WashBrightGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.01);
+            const WashMainBrightGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.01);
+            const WashBrightMaterial = new THREE.MeshPhongMaterial({ color: 0xFF0000, emissive: 0xFF0000 });
+            const WashBright1 = new THREE.Mesh(WashMainBrightGeometry, WashBrightMaterial);
+            const WashBright2 = new THREE.Mesh(WashBrightGeometry, WashBrightMaterial);
+            const WashBright3 = new THREE.Mesh(WashBrightGeometry, WashBrightMaterial);
+            const WashBright4 = new THREE.Mesh(WashBrightGeometry, WashBrightMaterial);
+
+            WashBright1.position.set(-37.95, 10.5, 14);
+            WashBright2.position.set(-33.95, 10.5, 14);
+            WashBright3.position.set(-32.95, 10.5, 14);
+            WashBright4.position.set(-31.95, 10.5, 14);
+            scene.add(WashBright1);
+            scene.add(WashBright2);
+            scene.add(WashBright3);
+            scene.add(WashBright4);
+
+            const WashLedlight = new THREE.PointLight(0xFF0000, 0.1, 100, 1)
+            WashLedlight.position.set(-37.95, 10.5, 14);
+            WashLedlight.visible = true;
+            scene.add(WashLedlight);
+            gui.add(WashLedlight, "visible").name("WashLedlight")
+
+            const WashLedlightHelper = new THREE.PointLightHelper(WashLedlight, 1);
+            WashLedlightHelper.visible = false;
+            scene.add(WashLedlightHelper);
+            gui.add(WashLedlightHelper, "visible").name("WashLedlightHelper")
+
+            const microLedlight = new THREE.PointLight(0xFFFF00, 0.2, 100, 1)
+            microLedlight.position.set(19, 11, 1.5);
+            microLedlight.visible = true;
+            scene.add(microLedlight);
+            gui.add(microLedlight, "visible").name("microLedlight")
+
+            const microLedlightHelper = new THREE.PointLightHelper(microLedlight, 1);
+            microLedlightHelper.visible = false;
+            scene.add(microLedlightHelper);
+            gui.add(microLedlightHelper, "visible").name("microLedlightHelper")
+
+
+
+
+
+            document
+                .getElementById("webgl-output")
+                .appendChild(renderer.domElement);
+            renderScene();
+
+
+
+            function renderScene() {
+                solarSystem.position.y = 100 * Math.sin(Date.now() * 0.0003);
+                solarSystem.position.z = 100 * Math.cos(Date.now() * 0.0003);
+                moonlightSystem.position.y = 100 * Math.sin(3.25 + Date.now() * 0.0003);
+                moonlightSystem.position.z = 100 * Math.cos(3.25 + Date.now() * 0.0003);
+                if (0.25 + Math.sin(Date.now() * 0.0003) < -0.5) {
+                    monitorlight.visible = false;
+                    monitorBright.visible = false;
+                    monitorBlack.visible = true;
+                    pcBright.visible = false;
+                    pcLedlight.visible = false;
+                    monitorLedlight.visible = false;
+                    monitorledBright.visible = false;
+                }
+                else if (0.25 + Math.sin(Date.now() * 0.0003) > -0.25) {
+
+                    monitorlight.visible = true;
+                    monitorBright.visible = true;
+                    monitorBlack.visible = false;
+                    pcBright.visible = true;
+                    pcLedlight.visible = true;
+                    monitorLedlight.visible = true;
+                    monitorledBright.visible = true;
+                }
+
+                if (0.25 + Math.sin(Date.now() * 0.0003) < 0.25) {
+                    main_lightl.visible = true;
+                    main_lightr.visible = true;
+                    mainlampmesh.visible = true;
+                    maindarkmesh.visible = false;
+                }
+                else if (0.25 + Math.sin(Date.now() * 0.0003) > 0.5) {
+
+                    main_lightl.visible = false;
+                    main_lightr.visible = false;
+                    mainlampmesh.visible = false;
+                    maindarkmesh.visible = true;
+                }
+                if ((0.25 + Math.sin(Date.now() * 0.0003) < 0.25) && (0.25 + Math.sin(Date.now() * 0.0012) < -0.5)) {
+                    kitchen_lightl.visible = true;
+                    kitchen_lightr.visible = true;
+                    veranda_lightl.visible = true;
+                    veranda_lightr.visible = true;
+                    kitchenlampmesh.visible = true;
+                    kitchendarkmesh.visible = false;
+                    verandalampmesh.visible = true;
+                    verandadarkmesh.visible = false;
+                    microLedlight.visible = true;
+                    WashLedlight.visible = true;
+                    WashBright1.visible = true;
+                    WashBright2.visible = true;
+                    WashBright3.visible = true;
+                    WashBright4.visible = true;
+                }
+                else if ((0.25 + Math.sin(Date.now() * 0.0012) > -0.25)) {
+
+                    kitchen_lightl.visible = false;
+                    kitchen_lightr.visible = false;
+                    veranda_lightl.visible = false;
+                    veranda_lightr.visible = false;
+                    kitchenlampmesh.visible = false;
+                    kitchendarkmesh.visible = true;
+                    verandalampmesh.visible = false;
+                    verandadarkmesh.visible = true;
+                    microLedlight.visible = false;
+                }
+
+
+                if ((0.25 + Math.sin(Date.now() * 0.0003) > 0.5) && (0.25 + Math.sin(Date.now() * 0.0012) < -0.5)) {
+
+                    WashLedlight.visible = true;
+                    WashBright1.visible = true;
+                    WashBright2.visible = true;
+                    WashBright3.visible = true;
+                    WashBright4.visible = true;
+                }
+                else if ((0.25 + Math.sin(Date.now() * 0.0003) < 0.25) || (0.25 + Math.sin(Date.now() * 0.0012) < -0.6)) {
+
+                    WashLedlight.visible = false;
+                    WashBright1.visible = false;
+                    WashBright2.visible = false;
+                    WashBright3.visible = false;
+                    WashBright4.visible = false;
+                }
+
+
+                controls.update();
+                requestAnimationFrame(renderScene);
+                renderer.render(scene, camera);
+            }
+        }
+        window.onload = init;
+    </script>
+</body>
+
+</html>

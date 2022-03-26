@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>ThreeJS
+    </title>
+    <script src="./three.js"></script>
+    <script src="./dat.gui.js"></script>
+    <script src="./OrbitControls.js"></script>
+    <script src="./GLTFLoader.js"></script>
+    <style>
+    </style>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+
+
+        function init() {
+
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(
+                45,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                1000
+            );
+            const gui = new dat.GUI();
+
+
+            var axes = new THREE.AxesHelper(15);
+            scene.add(axes);
+            gui
+                .add(axes, 'visible')
+                .name("축표시")
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setClearColor(new THREE.Color(0x000000));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+
+            // var renderer2 = new THREE.WebGLRenderer();
+            // renderer2.setClearColor(new THREE.Color(0x000000));
+            // renderer2.setSize(window.innerWidth, window.innerHeight);
+            // renderer2.shadowMap.enabled = true;
+
+            const bloader = new THREE.GLTFLoader();
+            // 이 로딩 내에서 전체 동작
+            // bloader.load('squid_game_-_giant_doll/body.gltf',
+            //     function (gltf) {
+            //         scene.add(gltf.scene);
+            //         gltf.scene.position.set(0, 5, 0)
+            //         gltf.scene.castShadow = true;
+            //     }
+            // )
+            const hloader = new THREE.GLTFLoader();
+            // 이 로딩 내에서 전체 동작
+            // hloader.load('squid_game_-_giant_doll/head.gltf',
+            //     function (gltf) {
+            //         scene.add(gltf.scene);
+            //         gltf.scene.position.set(0, 5, 0)
+            //         gltf.scene.castShadow = true;
+            //     }
+            // )
+
+            const pgeometry = new THREE.PlaneGeometry(200, 200);
+            const pmaterial = new THREE.MeshLambertMaterial({ side: 2 });
+            pmaterial.color.setHSL(0.095, 1, 0.75);
+
+            const plane = new THREE.Mesh(pgeometry, pmaterial);
+            plane.rotation.x = 1.5 * Math.PI
+            plane.receiveShadow = true;
+            plane.position.set(0, 0, 90)
+            scene.add(plane);
+            const wgeometry = new THREE.PlaneGeometry(200, 40);
+
+            const nplane = new THREE.Mesh(wgeometry, pmaterial);
+            nplane.rotation.x = -1.5 * Math.PI
+            nplane.receiveShadow = true;
+            nplane.position.set(0, 100, 20)
+            plane.add(nplane);
+
+            const wplane = new THREE.Mesh(wgeometry, pmaterial);
+            wplane.rotation.x = -1.5 * Math.PI
+            wplane.rotation.y = -1.5 * Math.PI
+            wplane.position.set(-100, 0, 20)
+            plane.add(wplane);
+
+            const eplane = new THREE.Mesh(wgeometry, pmaterial);
+            eplane.rotation.x = -0.5 * Math.PI
+            eplane.rotation.y = -0.5 * Math.PI
+            eplane.position.set(100, 0, 20)
+            plane.add(eplane);
+
+            const splane = new THREE.Mesh(wgeometry, pmaterial);
+            splane.rotation.x = -0.5 * Math.PI
+            splane.position.set(0, -100, 20)
+            plane.add(splane);
+
+
+            const spotLight = new THREE.SpotLight(0xffffff);
+            spotLight.position.set(0, 100, 90);
+            spotLight.castShadow = true;
+
+            scene.add(spotLight);
+            spotLight.target = plane;
+
+            bloader.load('squid_game_-_giant_doll/body.gltf',
+                function (gltf) {
+                    scene.add(gltf.scene);
+                    gltf.scene.position.set(0, 5, 1)
+                    gltf.scene.castShadow = true;
+
+                    //animation
+                    let yAxis = new THREE.Vector3(0, 1, 0);
+                    let qInitial = new THREE.Quaternion().setFromAxisAngle(yAxis, 0);
+                    let qFinal = new THREE.Quaternion().setFromAxisAngle(yAxis, Math.PI);
+
+                    let turnbackKF = new THREE.QuaternionKeyframeTrack('.quaternion', [0, 1, 5, 5.1], [qInitial.x, qInitial.y, qInitial.z, qInitial.w, qFinal.x, qFinal.y, qFinal.z, qFinal.w, qFinal.x, qFinal.y, qFinal.z, qFinal.w, qInitial.x, qInitial.y, qInitial.z, qInitial.w]);
+                    let clip = new THREE.AnimationClip('Action', 7, [turnbackKF]);
+                    gltf.animations = clip;
+                    mixer = new THREE.AnimationMixer(gltf.scene);
+                    const clipAction = mixer.clipAction(gltf.animations);
+                    //clipAction.play();
+                }
+            )
+
+            hloader.load('squid_game_-_giant_doll/head.gltf',
+                function (gltf) {
+                    scene.add(gltf.scene);
+                    gltf.scene.position.set(0, 5, 1)
+                    gltf.scene.castShadow = true;
+
+                    //animation
+                    let yAxis = new THREE.Vector3(0, 1, 0);
+                    let qInitial = new THREE.Quaternion().setFromAxisAngle(yAxis, 0);
+                    let qFinal = new THREE.Quaternion().setFromAxisAngle(yAxis, Math.PI);
+
+                    let turnbackKF = new THREE.QuaternionKeyframeTrack('.quaternion', [0, 1, 5, 5.1], [qInitial.x, qInitial.y, qInitial.z, qInitial.w, qFinal.x, qFinal.y, qFinal.z, qFinal.w, qFinal.x, qFinal.y, qFinal.z, qFinal.w, qInitial.x, qInitial.y, qInitial.z, qInitial.w]);
+                    let clip = new THREE.AnimationClip('Action', 7, [turnbackKF]);
+                    gltf.animations = clip;
+                    mixer = new THREE.AnimationMixer(gltf.scene);
+                    const clipAction = mixer.clipAction(gltf.animations);
+                    clipAction.play();
+                }
+            )
+
+            var mixer = new THREE.AnimationMixer();
+            var clock = new THREE.Clock();
+            renderScene();
+            function renderScene() {
+
+                const delta = clock.getDelta();
+                if (mixer) {
+                    mixer.update(delta);
+                }
+                requestAnimationFrame(renderScene);
+                renderer.render(scene, camera);
+            }
+
+
+
+
+
+
+
+
+            const positionKF = new THREE.VectorKeyframeTrack('.position', [0],
+                [0, 0, 0
+                ]);
+            const scaleKF = new THREE.VectorKeyframeTrack('.scale', [0], [2, 2, 2]);
+            const xAxis = new THREE.Vector3(1, 0, 0);
+            const qInitial = new THREE.Quaternion().setFromAxisAngle(xAxis, 0);
+            const qFinal = new THREE.Quaternion().setFromAxisAngle(xAxis, Math.PI);
+            const quaternionKF = new THREE.QuaternionKeyframeTrack('.quaternion', [0, 1, 2], [qInitial.x, qInitial.y, qInitial.z, qInitial.w, qFinal.x, qFinal.y, qFinal.z, qFinal.w, qInitial.x, qInitial.y, qInitial.z, qInitial.w]);
+            const colorKF = new THREE.ColorKeyframeTrack('.material.color', [0, 0.1, 0.2, 0.3], [0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1], THREE.InterpolateDiscrete);
+            const opacityKF = new THREE.NumberKeyframeTrack('.material.opacity', [0, 3, 6], [1, 0, 1]);
+            const clip2 = new THREE.AnimationClip('Action', 0.4, [positionKF, scaleKF, quaternionKF, colorKF, opacityKF]);
+
+
+
+            const animationGroup = new THREE.AnimationObjectGroup();
+
+            var mixer2 = new THREE.AnimationMixer(animationGroup);
+
+            // create a ClipAction and set it to play
+            const clipAction = mixer2.clipAction(clip2);
+            clipAction.play();
+
+            var clock2 = new THREE.Clock();
+            renderScene2();
+            function renderScene2() {
+                const delta2 = clock2.getDelta();
+                if (mixer2) {
+                    mixer2.update(delta2);
+                }
+                //controls.update()
+                requestAnimationFrame(renderScene2);
+                renderer.render(scene, camera);
+            }
+
+            const boxgeometry = new THREE.BoxGeometry(1, 1, 1);
+            const boxmaterial = new THREE.MeshBasicMaterial({ transparent: true });
+
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
+                    const boxmesh = new THREE.Mesh(boxgeometry, boxmaterial);
+                    boxmesh.position.x = 6 - (3 * i);
+                    boxmesh.position.y = 0;
+                    boxmesh.position.z = 6 - (3 * j);
+                    scene.add(boxmesh);
+                    animationGroup.add(boxmesh);
+                }
+            }
+
+
+            // const positionmz3 = new THREE.VectorKeyframeTrack('.position', [0, 1], [22.25, 9.25, -10.5, 22.25, 9.25, -19.5],);
+            // const clipmz3 = new THREE.AnimationClip('Action', 2, [positionmz3]);
+
+            // const animationmz3 = new THREE.AnimationObjectGroup();
+            // var mixermz3 = new THREE.AnimationMixer(animationmz3);
+            // const clipActionmz3 = mixermz3.clipAction(clipmz3);
+            // clipActionmz3.play();
+
+            // var clock3 = new THREE.Clock();
+            // renderScene3();
+            // function renderScene3() {
+            //     const delta3 = clock3.getDelta();
+            //     if (mixermz3) {
+            //         mixermz3.update(delta3);
+            //     }
+            //     //controls.update()
+            //     requestAnimationFrame(renderScene3);
+            //     renderer.render(scene, camera);
+            // }
+
+            function makedor(material, size_x, size_y, size_z, position_x, position_y, position_z) {
+                const dor_geometry = new THREE.BoxGeometry(size_x, size_y, size_z); // 문이면 x 1 유리면 x 0.5?
+                const dor = new THREE.Mesh(dor_geometry, material);
+                dor.rotation.x = 0.5 * Math.PI
+                dor.position.set(position_x, position_y, position_z)
+                dor.castShadow = true;
+                scene.add(dor);
+                const positiondor = new THREE.VectorKeyframeTrack('.position', [0, 4],
+                    [position_x, position_y, position_z,
+                        position_x, position_y, position_z - 9,
+                    ]);
+                const clipdor = new THREE.AnimationClip('Action', 4, [positiondor]);
+
+                const animationm = new THREE.AnimationObjectGroup();
+                var mixerm = new THREE.AnimationMixer(animationm);
+                const clipActionm = mixerm.clipAction(clipdor);
+                clipActionm.play();
+                var clock5 = new THREE.Clock();
+                renderScene5();
+                function renderScene5() {
+
+                    const delta5 = clock5.getDelta();
+                    if (mixerm) {
+                        mixerm.update(delta5);
+                    }
+                    requestAnimationFrame(renderScene5);
+                    renderer.render(scene, camera);
+                }
+                return dor;
+            }
+
+            //var mixer5 = new THREE.AnimationMixer();
+
+
+            var movemz1 = [
+
+                makedor(boxmaterial, 0.25, 8, 16.5, 22.25, 9.25, -10.5), //부엌 창문 우 창
+                makedor(boxmaterial, 0.5, 1, 19, 22.25, 9.5, -15),
+                makedor(boxmaterial, 0.5, 1, 19, 22.25, 9.5, -6),
+                makedor(boxmaterial, 0.5, 8, 1, 22.25, 18, -10.5),
+                makedor(boxmaterial, 0.5, 8, 1, 22.25, 0.5, -10.5),
+
+            ]
+
+            // animationmz3.add(movemz1);
+
+
+
+
+
+            //화면 마우스로 회전시키기
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            camera.position.set(0, 10, 50);
+            controls.update()
+
+
+
+
+
+            const color = 0xFFFFFF;
+            const intensity = 1;
+            const light = new THREE.DirectionalLight(color, intensity);
+            light.position.set(-10, 2, 4);
+            scene.add(light);
+
+
+
+
+
+
+            function updateCamera() {
+                camera.updateProjectionMatrix()
+            }
+
+
+
+            document.body.appendChild(renderer.domElement);
+            //document.body.appendChild(renderer2.domElement);
+
+
+        }
+        window.onload = init;
+    </script>
+</body>
+
+</html>

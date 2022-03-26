@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>ThreeJS
+    </title>
+    <script src="./three.js"></script>
+    <script src="./dat.gui.js"></script>
+    <script src="./OrbitControls.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="webgl-output"></div>
+    <script>
+
+        function init() {
+
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(
+                45,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                1000
+            );
+            const gui = new dat.GUI();
+            var axes = new THREE.AxesHelper(15);
+            scene.add(axes);
+            gui
+                .add(axes, 'visible')
+                .name("축표시")
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setClearColor(new THREE.Color(0x000000));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            const geometry = new THREE.SphereGeometry(1, 32, 16);
+            const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+
+            material.flatShading = true
+            material.metalness = 0.64
+            material.roughness = 0.39
+            const sphere = new THREE.Mesh(geometry, material);
+
+            sphere.position.y = 10;
+            scene.add(sphere);
+
+            gui.add(sphere.material, 'metalness', 0, 1, 0.01)
+            gui.add(sphere.material, 'roughness', 0, 1, 0.01)
+
+            const pgeometry = new THREE.PlaneGeometry(15, 15);
+            const pmaterial = new THREE.MeshLambertMaterial();
+            const plane = new THREE.Mesh(pgeometry, pmaterial);
+            plane.rotation.x = 1.5 * Math.PI
+            plane.position.set(0, -1, 0)
+            scene.add(plane);
+
+            var ambientLight = new THREE.AmbientLight(0x0c0c00);
+            scene.add(ambientLight);
+
+            // POSITION
+            // const positionKF = new THREE.VectorKeyframeTrack('.position', [0, 1, 2, 3, 4, 5, 6],
+            //     [0, 10, 0,
+            //         5, 5, 5,
+            //         10, 0, 0,
+            //         5, 5, 5,
+            //         0, 0, 10,
+            //         5, 5, 5,
+            //         0, 10, 0
+            //     ]);
+            const positionKF = new THREE.VectorKeyframeTrack('.position', [0],
+                [0, 10, 0
+                ]);
+            // SCALE
+            // const scaleKF = new THREE.VectorKeyframeTrack('.scale', [0, 1, 2, 3, 4, 5, 6], [1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1]);
+            const scaleKF = new THREE.VectorKeyframeTrack('.scale', [0], [2, 2, 2]);
+            const xAxis = new THREE.Vector3(1, 0, 0);
+            const qInitial = new THREE.Quaternion().setFromAxisAngle(xAxis, 0);
+            const qFinal = new THREE.Quaternion().setFromAxisAngle(xAxis, Math.PI);
+            const quaternionKF = new THREE.QuaternionKeyframeTrack('.quaternion', [0, 1, 2], [qInitial.x, qInitial.y, qInitial.z, qInitial.w, qFinal.x, qFinal.y, qFinal.z, qFinal.w, qInitial.x, qInitial.y, qInitial.z, qInitial.w]);
+            // COLOR
+            // const colorKF = new THREE.ColorKeyframeTrack('.material.color', [0, 1, 2, 3, 4, 5],
+            //     [0, 1, 0,
+            //         1, 1, 1,
+            //         1, 0, 0,
+            //         1, 1, 1,
+            //         0, 0, 1,
+            //         1, 1, 1], THREE.InterpolateDiscrete);
+            const colorKF = new THREE.ColorKeyframeTrack('.material.color', [0, 0.1, 0.2, 0.3], [0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1], THREE.InterpolateDiscrete);
+            // OPACITY
+            const opacityKF = new THREE.NumberKeyframeTrack('.material.opacity', [0, 3, 6], [1, 0, 1]);
+
+            const clip = new THREE.AnimationClip('Action', 0.4, [positionKF, scaleKF, quaternionKF, colorKF, opacityKF]);
+
+
+            //화면 마우스로 회전시키기
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            camera.position.set(-20, 20, 20);
+            controls.update();
+
+
+            const animationGroup = new THREE.AnimationObjectGroup();
+
+            var mixer = new THREE.AnimationMixer(animationGroup);
+
+            // create a ClipAction and set it to play
+            const clipAction = mixer.clipAction(clip);
+            clipAction.play();
+
+            var clock = new THREE.Clock();
+            renderScene();
+            function renderScene() {
+                const delta = clock.getDelta();
+                if (mixer) {
+                    mixer.update(delta);
+                }
+                controls.update()
+                requestAnimationFrame(renderScene);
+                renderer.render(scene, camera);
+            }
+
+            const boxgeometry = new THREE.BoxGeometry(1, 1, 1);
+            const boxmaterial = new THREE.MeshBasicMaterial({ transparent: true });
+
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
+                    const boxmesh = new THREE.Mesh(boxgeometry, boxmaterial);
+                    boxmesh.position.x = 6 - (3 * i);
+                    boxmesh.position.y = 0;
+                    boxmesh.position.z = 6 - (3 * j);
+                    scene.add(boxmesh);
+                    animationGroup.add(boxmesh);
+                }
+            }
+            animationGroup.add(sphere);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            const color = 0xFFFFFF;
+            const intensity = 1;
+            const light = new THREE.DirectionalLight(color, intensity);
+            light.position.set(-10, 2, 4);
+            scene.add(light);
+
+
+
+
+            // function updateCamera() {
+            //     camera.updateProjectionMatrix()
+            // }
+
+
+
+            document.getElementById("webgl-output").appendChild(renderer.domElement);
+
+        }
+        window.onload = init;
+    </script>
+</body>
+
+</html>
